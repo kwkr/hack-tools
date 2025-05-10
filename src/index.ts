@@ -4,10 +4,11 @@ import type { PluginStorage } from "./types";
 
 import "./styles/script.css";
 
-const Page = "/my-plugin" as const;
+const pluginId = "hack-tools";
+const Page = `/${pluginId}` as const;
 const Commands = {
-  increment: "my-plugin.increment",
-  decrement: "my-plugin.decrement",
+  decrement: `${pluginId}.decrement`,
+  copyNullByte: `${pluginId}.decrement`,
 } as const;
 
 const getCount = (caido: Caido) => {
@@ -18,38 +19,36 @@ const getCount = (caido: Caido) => {
   }
 
   return 0;
-}
-
-const increment = (caido: Caido) => {
-  const count = getCount(caido);
-  caido.storage.set({ count: count + 1 });
-}
+};
 
 const decrement = (caido: Caido) => {
   const count = getCount(caido);
   caido.storage.set({ count: count - 1 });
-}
+};
+
+const copyNullByte = (caido: Caido) => {};
 
 const addPage = (caido: Caido) => {
-
-  const count = getCount(caido);
-
   const body = document.createElement("div");
-  body.className = "my-plugin";
+  body.className = "container";
   body.innerHTML = `
-    <div class="my-plugin__count">
-      <span>Count:</span>
-      <span class="my-plugin__value">${count}</span>
+    <div class="container__count">
+      <button class="c-button" data-command="${Commands.copyNullByte}">NULL BYTE</button>
     </div>
     <div>
-      <button class="c-button" data-command="${Commands.increment}">Increment</button>
+
       <button class="c-button" data-command="${Commands.decrement}">Decrement</button>
     </div>
   `;
 
-  const countElement = body.querySelector(".my-plugin__value") as HTMLElement;
-  const incrementButton = body.querySelector(`[data-command="${Commands.increment}"]`) as HTMLElement;
-  const decrementButton = body.querySelector(`[data-command="${Commands.decrement}"]`) as HTMLElement;
+  const countElement = body.querySelector(".container__value") as HTMLElement;
+  const copyNullByteButton = body.querySelector(
+    `[data-command="${Commands.copyNullByte}"]`,
+  ) as HTMLElement;
+
+  const decrementButton = body.querySelector(
+    `[data-command="${Commands.decrement}"]`,
+  ) as HTMLElement;
 
   caido.storage.onChange((newStorage) => {
     const storage = newStorage as PluginStorage | undefined;
@@ -60,8 +59,8 @@ const addPage = (caido: Caido) => {
     }
   });
 
-  incrementButton.addEventListener("click", () => {
-    increment(caido);
+  copyNullByteButton.addEventListener("click", () => {
+    navigator.clipboard.writeText("�");
   });
 
   decrementButton.addEventListener("click", () => {
@@ -71,18 +70,16 @@ const addPage = (caido: Caido) => {
   caido.navigation.addPage(Page, {
     body,
   });
-}
-
+};
 
 export const init = (caido: Caido) => {
-
   // Register commands
   // Commands are registered with a unique identifier and a handler function
   // The run function is called when the command is executed
   // These commands can be registered in various places like command palette, context menu, etc.
-  caido.commands.register(Commands.increment, {
-    name: "Increment",
-    run: () => increment(caido),
+  caido.commands.register(Commands.copyNullByte, {
+    name: "CopyNullByte",
+    run: () => copyNullByte(caido),
   });
 
   caido.commands.register(Commands.decrement, {
@@ -90,16 +87,13 @@ export const init = (caido: Caido) => {
     run: () => decrement(caido),
   });
 
-  // Register command palette items
-  caido.commandPalette.register(Commands.increment);
   caido.commandPalette.register(Commands.decrement);
 
   // Register page
   addPage(caido);
 
   // Register sidebar
-  caido.sidebar.registerItem("My plugin", Page, {
+  caido.sidebar.registerItem("HackTools", Page, {
     icon: "fas fa-rocket",
   });
-}
-
+};

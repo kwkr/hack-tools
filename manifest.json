@@ -1,11 +1,11 @@
 {
-  "id": "starterkit-plugin",
-  "name": "StarterKit Plugin",
+  "id": "hack-tools",
+  "name": "HackTools",
   "version": "0.1.0",
-  "description": "This is a starterkit plugin",
+  "description": "All the tools you need in one Tab",
   "author": {
-    "name": "Caido Labs Inc.",
-    "email": "dev@caido.io",
+    "name": "Maciej Kawka",
+    "email": "kawka.maciej.93@gmail.com",
     "url": "https://github.com/caido/starterkit-plugin"
   },
   "plugins": [
