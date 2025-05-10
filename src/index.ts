@@ -107,7 +107,55 @@ const addPage = (caido: Caido) => {
         </div>
       </div>
     </div>
+<div>
+  <h3>UUID Generator</h3>
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <div id="uuidOutput" class="input" style="flex: 1;"></div>
+    <button id="uuidGenBtn" class="button">Generate</button>
+    <div id="uuidCopyBtn"></div>
+  </div>
+</div>
+
+<div>
+  <h3>Random String Generator</h3>
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <input id="randLength" type="number" class="input" min="1" value="16" style="width: 80px;" />
+    <button id="randStrGenBtn" class="button">Generate</button>
+    <div id="randStrOutput" class="input" style="flex: 1;"></div>
+    <div id="randStrCopyBtn"></div>
+  </div>
+</div>
+
+<div>
+  <h3>URL Encode</h3>
+  <textarea id="urlInput" rows="2" class="input" style="width: 100%"></textarea>
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <div id="urlEncoded" class="input" style="flex: 1;"></div>
+    <div id="urlEncodeCopyBtn"></div>
+  </div>
+</div>
+
+<div>
+  <h3>URL Decode</h3>
+  <textarea id="urlEncodedInput" rows="2" class="input" style="width: 100%"></textarea>
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <div id="urlDecoded" class="input" style="flex: 1;"></div>
+    <div id="urlDecodeCopyBtn"></div>
+  </div>
+</div>
+
   `;
+
+  // Helper for generating random string
+  const randomString = (length: number): string => {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
 
   // Elements
   const base64Input = body.querySelector("#base64Input") as HTMLTextAreaElement;
@@ -174,6 +222,56 @@ const addPage = (caido: Caido) => {
     "#jwtPayloadCopyBtn",
   ) as HTMLElement;
   jwtPayloadCopyBtn.appendChild(createCopyButton(() => jwtPayload.value));
+
+  const uuidOutput = body.querySelector("#uuidOutput") as HTMLElement;
+  const uuidGenBtn = body.querySelector("#uuidGenBtn") as HTMLButtonElement;
+  uuidGenBtn.addEventListener("click", () => {
+    uuidOutput.textContent = window.crypto.randomUUID();
+  });
+  (body.querySelector("#uuidCopyBtn") as HTMLElement).appendChild(
+    createCopyButton(() => uuidOutput.textContent || ""),
+  );
+
+  const randLengthInput = body.querySelector("#randLength") as HTMLInputElement;
+  const randStrOutput = body.querySelector("#randStrOutput") as HTMLElement;
+  const randStrGenBtn = body.querySelector(
+    "#randStrGenBtn",
+  ) as HTMLButtonElement;
+  randStrGenBtn.addEventListener("click", () => {
+    const len = parseInt(randLengthInput.value) || 16;
+    randStrOutput.textContent = randomString(len);
+  });
+  (body.querySelector("#randStrCopyBtn") as HTMLElement).appendChild(
+    createCopyButton(() => randStrOutput.textContent || ""),
+  );
+
+  const urlInput = body.querySelector("#urlInput") as HTMLTextAreaElement;
+  const urlEncoded = body.querySelector("#urlEncoded") as HTMLElement;
+  urlInput.addEventListener("input", () => {
+    try {
+      urlEncoded.textContent = encodeURIComponent(urlInput.value);
+    } catch {
+      urlEncoded.textContent = "Encoding error";
+    }
+  });
+  (body.querySelector("#urlEncodeCopyBtn") as HTMLElement).appendChild(
+    createCopyButton(() => urlEncoded.textContent || ""),
+  );
+
+  const urlEncodedInput = body.querySelector(
+    "#urlEncodedInput",
+  ) as HTMLTextAreaElement;
+  const urlDecoded = body.querySelector("#urlDecoded") as HTMLElement;
+  urlEncodedInput.addEventListener("input", () => {
+    try {
+      urlDecoded.textContent = decodeURIComponent(urlEncodedInput.value);
+    } catch {
+      urlDecoded.textContent = "Decoding error";
+    }
+  });
+  (body.querySelector("#urlDecodeCopyBtn") as HTMLElement).appendChild(
+    createCopyButton(() => urlDecoded.textContent || ""),
+  );
 
   caido.storage.onChange((newStorage) => {
     // const storage = newStorage as PluginStorage | undefined;
