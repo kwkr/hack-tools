@@ -9,6 +9,7 @@ const Commands = {
   copyNullByte: `${pluginId}.copyNullByte`,
   copyEmoji: `${pluginId}.copyEmoji`,
   copyUTF16: `${pluginId}.copyUTF16`,
+  randomUUID: `${pluginId}.randomUUID`,
 } as const;
 
 const base64Decode = (str: string): string => {
@@ -72,9 +73,11 @@ const addPage = (caido: Caido) => {
       <button class="c-button button" data-command="${Commands.copyUTF16}">UTF16</button>
     </div>
 
+    <div style="display: flex; align-items: center; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 10px; flex-direction:column;">
     <div>
-      <h3>Base64 Decode</h3>
-      <textarea id="base64Input" class="input" rows="4" style="width: 100%"></textarea>
+      <h3 style="margin-top:6px;">Base64 Decode</h3>
+      <textarea id="base64Input" class="input" rows="3"></textarea>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div id="base64Output" style="white-space: pre-wrap; flex: 1;" class="input"></div>
         <div id="base64CopyBtn"></div>
@@ -82,43 +85,47 @@ const addPage = (caido: Caido) => {
     </div>
 
     <div>
-      <h3>Text to Base64</h3>
-      <textarea id="textInput" rows="4" class="input" style="width: 100%"></textarea>
+      <h3 style="margin-top:6px;">Text to Base64</h3>
+      <textarea id="textInput" rows="3" class="input"></textarea>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div id="textBase64Output" style="white-space: pre-wrap; flex: 1;" class="input"></div>
         <div id="textBase64CopyBtn"></div>
       </div>
     </div>
+    </div>
 
     <div>
-      <h3>JWT Decode/Modify</h3>
-      <textarea id="jwtInput" rows="2" class="input" style="width: 100%"></textarea>
+      <h3 style="margin-top:6px;">JWT Decode/Modify</h3>
+      <textarea id="jwtInput" rows="2" class="input" ></textarea>
       <div id="jwtCopyBtn" style="margin-bottom: 8px;"></div>
       <div style="display: flex; gap: 10px;">
         <div style="flex: 1;">
           <h4>Header</h4>
-          <textarea id="jwtHeader" rows="4" class="input" style="width: 100%"></textarea>
+          <textarea id="jwtHeader" rows="3" class="input" style="width: 100%"></textarea>
           <div id="jwtHeaderCopyBtn"></div>
         </div>
         <div style="flex: 1;">
           <h4>Payload</h4>
-          <textarea id="jwtPayload" rows="4" class="input" style="width: 100%"></textarea>
+          <textarea id="jwtPayload" rows="3" class="input" style="width: 100%"></textarea>
           <div id="jwtPayloadCopyBtn"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div>
+      <h3 style="margin-top:6px;">UUID Generator</h3>
+      <div style="display: flex; gap: 10px; align-items: center; flex-direction: column;">
+        <div id="uuidOutput" class="input" style="flex: 1;"></div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button id="uuidGenBtn" class="button">Generate</button>
+          <div id="uuidCopyBtn"></div>
         </div>
       </div>
     </div>
 
     <div>
-      <h3>UUID Generator</h3>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <div id="uuidOutput" class="input" style="flex: 1;"></div>
-        <button id="uuidGenBtn" class="button">Generate</button>
-        <div id="uuidCopyBtn"></div>
-      </div>
-    </div>
-
-    <div>
-      <h3>Random String Generator</h3>
+      <h3 style="margin-top:6px;">Random String Generator</h3>
       <div style="display: flex; align-items: center; gap: 10px;">
         <input id="randLength" type="number" class="input" min="1" value="16" style="width: 80px;" />
         <button id="randStrGenBtn" class="button">Generate</button>
@@ -128,7 +135,7 @@ const addPage = (caido: Caido) => {
     </div>
 
     <div>
-      <h3>URL Encode</h3>
+      <h3 style="margin-top:6px;">URL Encode</h3>
       <textarea id="urlInput" rows="2" class="input" style="width: 100%"></textarea>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div id="urlEncoded" class="input" style="flex: 1;"></div>
@@ -137,7 +144,7 @@ const addPage = (caido: Caido) => {
     </div>
 
     <div>
-      <h3>URL Decode</h3>
+      <h3 style="margin-top:6px;">URL Decode</h3>
       <textarea id="urlEncodedInput" rows="2" class="input" style="width: 100%"></textarea>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div id="urlDecoded" class="input" style="flex: 1;"></div>
@@ -146,7 +153,7 @@ const addPage = (caido: Caido) => {
     </div>
 
     <div>
-      <h3>Unix Timestamp → Date</h3>
+      <h3 style="margin-top:6px;">Unix Timestamp → Date</h3>
       <textarea id="unixInput" rows="1" class="input" style="width: 100%"></textarea>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div id="unixDateOutput" class="input" style="flex: 1;"></div>
@@ -334,8 +341,14 @@ export const init = (caido: Caido) => {
     name: "CopyNullByte",
     run: () => navigator.clipboard.writeText("�"),
   });
-
   caido.commandPalette.register(Commands.copyNullByte);
+
+  caido.commands.register(Commands.randomUUID, {
+    name: "RandomUUID",
+    run: () => navigator.clipboard.writeText(window.crypto.randomUUID()),
+  });
+
+  caido.commandPalette.register(Commands.randomUUID);
 
   caido.commands.register(Commands.copyEmoji, {
     name: "CopyEmoji",
