@@ -7,3 +7,21 @@
   align-items: center;
   flex-direction: column;
 }
+
+.input {
+  color: #060613;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #f1f2f4;
+}
+
+.button {
+  border: double 3px transparent;
+  border-radius: 6px;
+  background-image: linear-gradient(white, white),
+    linear-gradient(to right, #a53d3c, #dba85f);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: #060613;
+  padding: 4px 8px;
+}
