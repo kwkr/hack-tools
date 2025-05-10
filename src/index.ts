@@ -107,43 +107,52 @@ const addPage = (caido: Caido) => {
         </div>
       </div>
     </div>
-<div>
-  <h3>UUID Generator</h3>
-  <div style="display: flex; gap: 10px; align-items: center;">
-    <div id="uuidOutput" class="input" style="flex: 1;"></div>
-    <button id="uuidGenBtn" class="button">Generate</button>
-    <div id="uuidCopyBtn"></div>
-  </div>
-</div>
 
-<div>
-  <h3>Random String Generator</h3>
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <input id="randLength" type="number" class="input" min="1" value="16" style="width: 80px;" />
-    <button id="randStrGenBtn" class="button">Generate</button>
-    <div id="randStrOutput" class="input" style="flex: 1;"></div>
-    <div id="randStrCopyBtn"></div>
-  </div>
-</div>
+    <div>
+      <h3>UUID Generator</h3>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <div id="uuidOutput" class="input" style="flex: 1;"></div>
+        <button id="uuidGenBtn" class="button">Generate</button>
+        <div id="uuidCopyBtn"></div>
+      </div>
+    </div>
 
-<div>
-  <h3>URL Encode</h3>
-  <textarea id="urlInput" rows="2" class="input" style="width: 100%"></textarea>
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <div id="urlEncoded" class="input" style="flex: 1;"></div>
-    <div id="urlEncodeCopyBtn"></div>
-  </div>
-</div>
+    <div>
+      <h3>Random String Generator</h3>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input id="randLength" type="number" class="input" min="1" value="16" style="width: 80px;" />
+        <button id="randStrGenBtn" class="button">Generate</button>
+        <div id="randStrOutput" class="input" style="flex: 1;"></div>
+        <div id="randStrCopyBtn"></div>
+      </div>
+    </div>
 
-<div>
-  <h3>URL Decode</h3>
-  <textarea id="urlEncodedInput" rows="2" class="input" style="width: 100%"></textarea>
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <div id="urlDecoded" class="input" style="flex: 1;"></div>
-    <div id="urlDecodeCopyBtn"></div>
-  </div>
-</div>
+    <div>
+      <h3>URL Encode</h3>
+      <textarea id="urlInput" rows="2" class="input" style="width: 100%"></textarea>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div id="urlEncoded" class="input" style="flex: 1;"></div>
+        <div id="urlEncodeCopyBtn"></div>
+      </div>
+    </div>
 
+    <div>
+      <h3>URL Decode</h3>
+      <textarea id="urlEncodedInput" rows="2" class="input" style="width: 100%"></textarea>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div id="urlDecoded" class="input" style="flex: 1;"></div>
+        <div id="urlDecodeCopyBtn"></div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Unix Timestamp → Date</h3>
+      <textarea id="unixInput" rows="1" class="input" style="width: 100%"></textarea>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div id="unixDateOutput" class="input" style="flex: 1;"></div>
+        <div id="unixDateCopyBtn"></div>
+      </div>
+    </div>
   `;
 
   // Helper for generating random string
@@ -271,6 +280,27 @@ const addPage = (caido: Caido) => {
   });
   (body.querySelector("#urlDecodeCopyBtn") as HTMLElement).appendChild(
     createCopyButton(() => urlDecoded.textContent || ""),
+  );
+
+  const unixInput = body.querySelector("#unixInput") as HTMLTextAreaElement;
+  const unixDateOutput = body.querySelector("#unixDateOutput") as HTMLElement;
+
+  unixInput.addEventListener("input", () => {
+    const value = unixInput.value.trim();
+    const timestamp = parseInt(value, 10);
+
+    if (!isNaN(timestamp)) {
+      const date = new Date(
+        timestamp.toString().length === 13 ? timestamp : timestamp * 1000,
+      );
+      unixDateOutput.textContent = date.toISOString();
+    } else {
+      unixDateOutput.textContent = "Invalid timestamp";
+    }
+  });
+
+  (body.querySelector("#unixDateCopyBtn") as HTMLElement).appendChild(
+    createCopyButton(() => unixInput.value || ""),
   );
 
   caido.storage.onChange((newStorage) => {
