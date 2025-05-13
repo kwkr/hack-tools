@@ -10,6 +10,16 @@ const Commands = {
   copyEmoji: `${pluginId}.copyEmoji`,
   copyUTF16: `${pluginId}.copyUTF16`,
   randomUUID: `${pluginId}.randomUUID`,
+  cp0: `${pluginId}.CP0`,
+  cp1: `${pluginId}.CP1`,
+  cp2: `${pluginId}.CP2`,
+  cp3: `${pluginId}.CP3`,
+  cp4: `${pluginId}.CP4`,
+  cp5: `${pluginId}.CP5`,
+  cp6: `${pluginId}.CP6`,
+  cp7: `${pluginId}.CP7`,
+  cp8: `${pluginId}.CP8`,
+  cp9: `${pluginId}.CP9`,
 } as const;
 
 const base64Decode = (str: string): string => {
@@ -67,6 +77,8 @@ const addPage = (caido: Caido) => {
   body.className = "container";
 
   body.innerHTML = `
+    <div style="display: flex; jsutify-content: space-between;">
+    <div>
     <div class="container__count">
       <button class="c-button button" data-command="${Commands.copyNullByte}">NULL BYTE</button>
       <button class="c-button button" data-command="${Commands.copyEmoji}">EMOJI</button>
@@ -160,6 +172,21 @@ const addPage = (caido: Caido) => {
         <div id="unixDateCopyBtn"></div>
       </div>
     </div>
+    </div>
+
+    <div style="padding-left: 12px;">
+      <h3 style="margin: 6px  0px;">Clippy</h3>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div>
+          <input id="clippyId" type="number" class="input" min="1" max="10" value="1" style="width: 80px;" />
+          <input id="clippyValue" class="input" placeholder="value to save" value="xD" style="width: 80px;" />
+          <button id="saveClippy" class="button">Save</button>
+          <div id="clippyWrapper">
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
   `;
 
   // Helper for generating random string
@@ -244,6 +271,7 @@ const addPage = (caido: Caido) => {
   uuidGenBtn.addEventListener("click", () => {
     uuidOutput.textContent = window.crypto.randomUUID();
   });
+
   (body.querySelector("#uuidCopyBtn") as HTMLElement).appendChild(
     createCopyButton(() => uuidOutput.textContent || ""),
   );
@@ -310,8 +338,36 @@ const addPage = (caido: Caido) => {
     createCopyButton(() => unixInput.value || ""),
   );
 
+  const saveClippyBtn = body.querySelector("#saveClippy") as HTMLButtonElement;
+  saveClippyBtn.addEventListener("click", () => {
+    const clippyValue = body.querySelector("#clippyValue") as HTMLInputElement;
+    const clippyId = body.querySelector("#clippyId") as HTMLInputElement;
+    const storage = caido.storage.get() as PluginStorage | undefined;
+    const newStorage = {
+      ...storage,
+      [`cp${clippyId.value}`]: clippyValue.value,
+    };
+    caido.storage.set(newStorage);
+  });
+
   caido.storage.onChange((newStorage) => {
-    // const storage = newStorage as PluginStorage | undefined;
+    const storage = newStorage as PluginStorage | undefined;
+
+    if (storage) {
+      const clippyWrapper = body.querySelector(
+        "#clippyWrapper",
+      ) as HTMLDivElement;
+      clippyWrapper.innerHTML = "";
+      Object.keys(storage).forEach((key) => {
+        if (key.startsWith("cp")) {
+          const wrapper = document.createElement("div");
+          wrapper.attributeStyleMap.set("margin-top", "6px");
+          wrapper.innerHTML = `${key}: "${storage[key]}"`;
+          clippyWrapper.appendChild(wrapper);
+        }
+      });
+      return;
+    }
   });
 
   // Buttons
@@ -363,6 +419,37 @@ export const init = (caido: Caido) => {
   });
 
   caido.commandPalette.register(Commands.copyUTF16);
+
+  const storage = caido.storage.get();
+  const clippyWrapper = document.querySelector(
+    "#clippyWrapper",
+  ) as HTMLDivElement;
+
+  if (storage) {
+    Object.keys(storage).forEach((key) => {
+      if (key.startsWith("cp")) {
+        const wrapper = document.createElement("div");
+        wrapper.attributeStyleMap.set("margin-top", "6px");
+        wrapper.innerHTML = `${key}: "${storage[key]}"`;
+        clippyWrapper.appendChild(wrapper);
+      }
+    });
+  }
+
+  for (let k = 0; k < 10; k++) {
+    caido.commands.register(Commands[`cp${k}`], {
+      name: `CP${k}`,
+      run: () => {
+        const storage = caido.storage.get() as PluginStorage | undefined;
+
+        if (storage) {
+          navigator.clipboard.writeText(storage[`cp${k}`]);
+        }
+      },
+    });
+    caido.commandPalette.register(Commands[`cp${k}`]);
+    caido.shortcuts.register(Commands[`cp${k}`], ["alt", `${k}`]);
+  }
 
   addPage(caido);
 
