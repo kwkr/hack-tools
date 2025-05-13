@@ -362,6 +362,7 @@ const addPage = (caido: Caido) => {
         if (key.startsWith("cp")) {
           const wrapper = document.createElement("div");
           wrapper.attributeStyleMap.set("margin-top", "6px");
+          wrapper.attributeStyleMap.set("max-width", "100px");
           wrapper.innerHTML = `${key}: "${storage[key]}"`;
           clippyWrapper.appendChild(wrapper);
         }
@@ -430,6 +431,7 @@ export const init = (caido: Caido) => {
       if (key.startsWith("cp")) {
         const wrapper = document.createElement("div");
         wrapper.attributeStyleMap.set("margin-top", "6px");
+        wrapper.attributeStyleMap.set("max-width", "100px");
         wrapper.innerHTML = `${key}: "${storage[key]}"`;
         clippyWrapper.appendChild(wrapper);
       }
