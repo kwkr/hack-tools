@@ -1,8 +1,8 @@
 {
-  "name": "starterkit-plugin",
+  "name": "hack-tools",
   "version": "0.1.0",
-  "description": "StarterKit plugin for Caido",
-  "author": "Caido Labs Inc. <dev@caido.io>",
+  "description": "Little plugin that provides some common features used in bug bounty in a single tab",
+  "author": "Maciej Kawka <kawka.maciej.93@gmail.com>",
   "license": "CC0-1.0",
   "type": "module",
   "scripts": {

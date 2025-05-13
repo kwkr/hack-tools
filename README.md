@@ -17,3 +17,7 @@ Little plugin that provides some common features used in bug bounty in a single 
 1. `pnpm install`
 2. `pnpm build`
 3. Upload the plugin.zip in the `dist-zip` folder to your Caido instance
+
+![screenshot](./assets/ss1.png)
+
+Author: [zukerpie](https://x.com/zukerpie)
